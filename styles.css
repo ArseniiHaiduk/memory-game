@@ -19,23 +19,23 @@ body {
 
 h1 {
   text-align: center;
-  margin: 0 0 30px;
+  margin: 50px 0 30px;
 }
 
 .game-board {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
   align-items: center;
   gap: 20px;
   user-select: none;
-  width: 500px;
-  height: 500px;
+  width: 300px;
+  height: 300px;
 }
 
 .card {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   background-image: url(images/question-mark.png);
   background-size: cover;
   display: flex;
@@ -64,7 +64,6 @@ h1 {
 
 .timer,
 .attempt {
-  width: 480px;
   text-align: right;
   font-weight: 600;
 }
@@ -116,14 +115,14 @@ h1 {
   display: none;
 }
 
-@media (min-width: 320px) and (max-width: 767px) {
-  .game-board {
-    width: 300px;
-    height: 300px;
-  }
+.align-center {
+  justify-content: center;
+}
 
-  .card {
-    width: 75px;
-    height: 75px;
+@media (min-width: 499px) {
+  .game-board {
+    width: 500px;
+    height: 500px;
+    grid-template-columns: repeat(4, 1fr);
   }
 }

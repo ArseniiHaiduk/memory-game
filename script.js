@@ -7,11 +7,13 @@ const spentTime = document.querySelector(".spent-time");
 const memoryGame = document.querySelector(".memory-game");
 const gameBoard = document.querySelector(".game-board");
 const attempt = document.querySelector(".attempt");
+const body = document.querySelector("body");
 
 startBtn.addEventListener("click", () => {
   startWindow.classList.add("hidden");
   memoryGame.classList.remove("hidden");
   wonLostWindow.classList.add("hidden");
+  body.style.justifyContent = "start";
   timeCount();
   generateCards(fruitIcons);
 });
@@ -26,6 +28,7 @@ function checkWonLostGame(message) {
   card.forEach((element) => {
     element.remove();
   });
+  body.style.justifyContent = "center";
 }
 
 const timer = document.querySelector(".timer");
