@@ -8,12 +8,34 @@ const memoryGame = document.querySelector(".memory-game");
 const gameBoard = document.querySelector(".game-board");
 const attempt = document.querySelector(".attempt");
 const body = document.querySelector("body");
+const timer = document.querySelector(".timer");
+
+let [minutes, seconds] = [0, 0];
+let intervalId;
+const selectedCards = [];
+const guessedCards = [];
+let attempts = 0;
+
+const fruitIcons = [
+  "capybara",
+  "dolphin",
+  "flamingo",
+  "hummingbird",
+  "lemur",
+  "panda",
+  "penguin",
+  "wombat",
+];
 
 startBtn.addEventListener("click", () => {
   startWindow.classList.add("hidden");
   memoryGame.classList.remove("hidden");
   wonLostWindow.classList.add("hidden");
   body.style.justifyContent = "start";
+  attempts = 0;
+  seconds = 0;
+  timer.innerHTML = "Time: 00:00";
+  clearInterval(intervalId);
   timeCount();
   generateCards(fruitIcons);
 });
@@ -29,21 +51,14 @@ function checkWonLostGame(message) {
     element.remove();
   });
   body.style.justifyContent = "center";
+  clearInterval(intervalId);
 }
 
-const timer = document.querySelector(".timer");
-
-let [minutes, seconds] = [0, 0];
-
-let intervalId;
-
-const timeCount = () => {
+function timeCount() {
   intervalId = setInterval(() => {
     ++seconds;
 
     if (seconds === 60) {
-      seconds = 0;
-      clearInterval(intervalId);
       checkWonLostGame("You lost!!!");
       attempts = 0;
       amountAttempt.remove();
@@ -52,18 +67,7 @@ const timeCount = () => {
     // prettier-ignore
     timer.innerHTML = `Time: ${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }, 1000);
-};
-
-const fruitIcons = [
-  "capybara",
-  "dolphin",
-  "flamingo",
-  "hummingbird",
-  "lemur",
-  "panda",
-  "penguin",
-  "wombat",
-];
+}
 
 function shuffleCards(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -91,10 +95,6 @@ function generateCards(array) {
   });
 }
 
-const selectedCards = [];
-const guessedCards = [];
-let attempts = 0;
-
 function checkSelectedCards() {
   if (selectedCards.length === 2) {
     attempt.textContent = `Attempts: ${++attempts}`;
@@ -108,7 +108,6 @@ function checkSelectedCards() {
       guessedCards.push(selectedCards[1]);
 
       if (guessedCards.length === 16) {
-        clearInterval(intervalId);
         checkWonLostGame("You won!!!");
         amountAttempt.textContent = `Attempt: ${attempts} `;
         spentTime.textContent = `Time: ${seconds} second`;
