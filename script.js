@@ -7,7 +7,6 @@ const spentTime = document.querySelector(".spent-time");
 const memoryGame = document.querySelector(".memory-game");
 const gameBoard = document.querySelector(".game-board");
 const attempt = document.querySelector(".attempt");
-const body = document.querySelector("body");
 const timer = document.querySelector(".timer");
 
 let [minutes, seconds] = [0, 0];
@@ -35,7 +34,6 @@ startBtn.addEventListener("click", async () => {
   startWindow.classList.add("hidden");
   memoryGame.classList.remove("hidden");
   wonLostWindow.classList.add("hidden");
-  body.style.justifyContent = "start";
   attempts = 0;
   seconds = 0;
   timer.innerHTML = "Time: 00:00";
@@ -55,7 +53,6 @@ function checkWonLostGame(message) {
   card.forEach((element) => {
     element.remove();
   });
-  body.style.justifyContent = "center";
   clearInterval(intervalId);
 }
 
