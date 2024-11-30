@@ -16,18 +16,22 @@ const selectedCards = [];
 const guessedCards = [];
 let attempts = 0;
 
-const fruitIcons = [
-  "capybara",
-  "dolphin",
-  "flamingo",
-  "hummingbird",
-  "lemur",
-  "panda",
-  "penguin",
-  "wombat",
-];
+let animalIcons = [];
 
-startBtn.addEventListener("click", () => {
+async function fetchIcons() {
+  try {
+    const response = await fetch("icons.json");
+    if (!response.ok) {
+      throw new Error("Failed to fetch icons");
+    }
+    const data = await response.json();
+    animalIcons = data.icons;
+  } catch (error) {
+    console.error("Error fetching icons:", error);
+  }
+}
+
+startBtn.addEventListener("click", async () => {
   startWindow.classList.add("hidden");
   memoryGame.classList.remove("hidden");
   wonLostWindow.classList.add("hidden");
@@ -36,8 +40,9 @@ startBtn.addEventListener("click", () => {
   seconds = 0;
   timer.innerHTML = "Time: 00:00";
   clearInterval(intervalId);
+  await fetchIcons();
   timeCount();
-  generateCards(fruitIcons);
+  generateCards(animalIcons);
 });
 
 function checkWonLostGame(message) {
@@ -96,36 +101,43 @@ function generateCards(array) {
 }
 
 function checkSelectedCards() {
-  if (selectedCards.length === 2) {
-    attempt.textContent = `Attempts: ${++attempts}`;
+  attempt.textContent = `Attempts: ${++attempts}`;
 
-    if (selectedCards[0].dataset.icon !== selectedCards[1].dataset.icon) {
-      selectedCards.forEach((card) => {
-        setTimeout(() => card.classList.remove("selected"), 900);
-      });
-    } else {
-      guessedCards.push(selectedCards[0]);
-      guessedCards.push(selectedCards[1]);
+  if (selectedCards[0].dataset.icon !== selectedCards[1].dataset.icon) {
+    selectedCards.forEach((card) => {
+      setTimeout(() => {
+        card.classList.remove("selected");
+      }, 900);
+    });
+  } else {
+    guessedCards.push(selectedCards[0]);
+    guessedCards.push(selectedCards[1]);
 
-      if (guessedCards.length === 16) {
-        checkWonLostGame("You won!!!");
-        amountAttempt.textContent = `Attempt: ${attempts} `;
-        spentTime.textContent = `Time: ${seconds} second`;
-      }
+    if (guessedCards.length === 16) {
+      checkWonLostGame("You won!!!");
+      amountAttempt.textContent = `Attempt: ${attempts} `;
+      spentTime.textContent = `Time: ${seconds} second`;
     }
-    selectedCards.length = 0;
   }
+  setTimeout(() => {
+    selectedCards.length = 0;
+    isChecking = false;
+  }, 900);
 }
 
+let isChecking = false;
 gameBoard.addEventListener("click", (event) => {
   const targetCard = event.target.closest(".card");
 
-  if (targetCard && !targetCard.classList.contains("selected")) {
-    targetCard.classList.add("selected");
-    selectedCards.push(targetCard);
-  }
+  if (!targetCard) return;
+  if (targetCard.classList.contains("selected")) return;
+  if (isChecking || selectedCards.length === 2) return;
+
+  targetCard.classList.add("selected");
+  selectedCards.push(targetCard);
 
   if (selectedCards.length === 2) {
+    isChecking = true;
     checkSelectedCards();
   }
 });
